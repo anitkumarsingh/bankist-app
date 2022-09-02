@@ -66,34 +66,55 @@ const inputClosePin = document.querySelector('.form__input--pin');
 // LECTURES
 
 const displayMovements = function (movements) {
-  containerMovements.innerHTML ='';
-	movements.forEach((move,i) => {
-    const type = move > 0 ? 'deposit':'withdrawal';
+	containerMovements.innerHTML = '';
+	movements.forEach((move, i) => {
+		const type = move > 0 ? 'deposit' : 'withdrawal';
 		const html = `
     <div class="movements__row">
-      <div class="movements__type movements__type--${type}">${i+1} ${type}</div>
-      <div class="movements__value">${move}</div>
+      <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+      <div class="movements__value">${move}€</div>
     </div>
     `;
-    containerMovements.insertAdjacentHTML('afterbegin',html);
+		containerMovements.insertAdjacentHTML('afterbegin', html);
 	});
 };
 
 displayMovements(account1.movements);
 
-const createUserName = function(accs){
-  accs.forEach(function(acc){
-    acc.userName = acc.owner.toLowerCase().split(' ').map(user=>user[0]).join('');
-  })
-}
+const createUserName = function (accs) {
+	accs.forEach(function (acc) {
+		acc.userName = acc.owner
+			.toLowerCase()
+			.split(' ')
+			.map((user) => user[0])
+			.join('');
+	});
+};
 
 createUserName(accounts);
 
-const displayBalance = function(movements){
- const balance = movements.reduce((acc,cur)=>acc+cur);
- labelBalance.textContent = `${balance} EURO`;
-}
+const displayBalance = function (movements) {
+	const balance = movements.reduce((acc, cur) => acc + cur);
+	labelBalance.textContent = `${balance}€`;
+};
 displayBalance(account1.movements);
+
+const displaySummary = (movements) => {
+	const deposit = movements.filter((mov) => mov > 0).reduce((acc, curr) => acc + curr, 0);
+	labelSumIn.textContent = `${deposit}€`;
+
+	const withdraw = movements
+		.filter((mov) => mov < 0)
+		.reduce((acc, curr) => acc + curr, 0);
+	labelSumOut.textContent = `${Math.abs(withdraw)}€`;
+
+	const intersetCal = movements
+		.filter((mov) => mov > 0)
+		.map((m) => (m * 1.2) / 100)
+		.reduce((acc, curr) => acc + curr, 0);
+	labelSumInterest.textContent = `${intersetCal}€`;
+};
+displaySummary(account1.movements);
 
 const currencies = new Map([
 	['USD', 'United States dollar'],
