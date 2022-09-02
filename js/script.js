@@ -89,6 +89,12 @@ const createUserName = function(accs){
 
 createUserName(accounts);
 
+const displayBalance = function(movements){
+ const balance = movements.reduce((acc,cur)=>acc+cur);
+ labelBalance.textContent = `${balance} EURO`;
+}
+displayBalance(account1.movements);
+
 const currencies = new Map([
 	['USD', 'United States dollar'],
 	['EUR', 'Euro'],
