@@ -81,6 +81,14 @@ const displayMovements = function (movements) {
 
 displayMovements(account1.movements);
 
+const createUserName = function(accs){
+  accs.forEach(function(acc){
+    acc.userName = acc.owner.toLowerCase().split(' ').map(user=>user[0]).join('');
+  })
+}
+
+createUserName(accounts);
+
 const currencies = new Map([
 	['USD', 'United States dollar'],
 	['EUR', 'Euro'],
