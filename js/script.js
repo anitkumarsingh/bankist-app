@@ -79,7 +79,6 @@ const displayMovements = function (movements) {
 	});
 };
 
-
 const createUserName = function (accs) {
 	accs.forEach(function (acc) {
 		acc.userName = acc.owner
@@ -92,13 +91,15 @@ const createUserName = function (accs) {
 
 createUserName(accounts);
 
-const displayBalance = function (movements) {
-	const balance = movements.reduce((acc, cur) => acc + cur);
-	labelBalance.textContent = `${balance}€`;
+const displayBalance = function (accs) {
+	accs.balance = accs.movements.reduce((acc, cur) => acc + cur);
+	labelBalance.textContent = `${accs.balance}€`;
 };
 
 const displaySummary = (account) => {
-	const deposit = account.movements.filter((mov) => mov > 0).reduce((acc, curr) => acc + curr, 0);
+	const deposit = account.movements
+		.filter((mov) => mov > 0)
+		.reduce((acc, curr) => acc + curr, 0);
 	labelSumIn.textContent = `${deposit}€`;
 
 	const withdraw = account.movements
@@ -113,24 +114,44 @@ const displaySummary = (account) => {
 	labelSumInterest.textContent = `${intersetCal}€`;
 };
 
-
+const updateUI = (acc) => {
+	displayMovements(acc.movements);
+	displayBalance(acc);
+	displaySummary(acc);
+};
 let currentUser;
 
-btnLogin.addEventListener('click',function(e){
+btnLogin.addEventListener('click', function (e) {
 	e.preventDefault();
-	currentUser = accounts.find(acc=>acc.userName === inputLoginUsername.value);
-	if(currentUser?.pin === Number(inputLoginPin.value)){
-	  labelWelcome.textContent = `Welcome back, ${currentUser.owner.split(' ')[0]}`;
+	currentUser = accounts.find((acc) => acc.userName === inputLoginUsername.value);
+	if (currentUser?.pin === Number(inputLoginPin.value)) {
+		labelWelcome.textContent = `Welcome back, ${currentUser.owner.split(' ')[0]}`;
 		containerApp.style.opacity = 100;
-    inputLoginUsername.value = inputLoginPin.value ='';
+		inputLoginUsername.value = inputLoginPin.value = '';
 		inputLoginPin.blur();
-
-		displayMovements(currentUser.movements);
-		displayBalance(currentUser.movements);
-		displaySummary(currentUser);
+		updateUI(currentUser);
 	}
-})
+});
 
+btnTransfer.addEventListener('click', function (e) {
+	e.preventDefault();
+	const amtTranfer = Number(inputTransferAmount.value);
+	const reciever = accounts.find(
+		(acc) => acc.userName === inputTransferTo.value.toLowerCase()
+	);
+	inputTransferTo.value = inputTransferAmount.value = '';
+	
+	if (
+		amtTranfer > 0 &&
+		amtTranfer <= currentUser.balance &&
+		reciever &&
+		reciever?.userName !== currentUser.userName
+	) {
+		currentUser.movements.push(-amtTranfer);
+		reciever.movements.push(amtTranfer);
+		updateUI(currentUser);
+	}
+});
 const currencies = new Map([
 	['USD', 'United States dollar'],
 	['EUR', 'Euro'],
