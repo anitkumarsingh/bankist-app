@@ -140,7 +140,7 @@ btnTransfer.addEventListener('click', function (e) {
 		(acc) => acc.userName === inputTransferTo.value.toLowerCase()
 	);
 	inputTransferTo.value = inputTransferAmount.value = '';
-	
+
 	if (
 		amtTranfer > 0 &&
 		amtTranfer <= currentUser.balance &&
@@ -152,6 +152,17 @@ btnTransfer.addEventListener('click', function (e) {
 		updateUI(currentUser);
 	}
 });
+
+btnLoan.addEventListener('click', function (e) {
+	e.preventDefault();
+	const loanAmt = Number(inputLoanAmount.value);
+	setTimeout(() => {
+		currentUser.movements.push(loanAmt);
+		updateUI(currentUser);
+		inputLoanAmount.value ='';
+	}, 1000);
+});
+
 const currencies = new Map([
 	['USD', 'United States dollar'],
 	['EUR', 'Euro'],
