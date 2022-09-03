@@ -159,8 +159,23 @@ btnLoan.addEventListener('click', function (e) {
 	setTimeout(() => {
 		currentUser.movements.push(loanAmt);
 		updateUI(currentUser);
-		inputLoanAmount.value ='';
+		inputLoanAmount.value = '';
 	}, 1000);
+});
+
+btnClose.addEventListener('click', function (e) {
+	e.preventDefault();
+	if (
+		currentUser.userName === inputCloseUsername.value &&
+		currentUser.pin === Number(inputClosePin.value)
+	) {
+		inputCloseUsername.value = inputClosePin.value = '';
+		const findCurrentUserIndex = accounts.findIndex(
+			(acc) => acc.userName === currentUser.userName
+		);
+		accounts.splice(findCurrentUserIndex, 1);
+		containerApp.style.opacity = 0;
+	}
 });
 
 const currencies = new Map([
